@@ -6,6 +6,7 @@ import { UserModule } from './modules/user/user.module';
 import { WorkerModule } from './modules/worker/worker.module';
 import { SocketModule } from './modules/socket/socket.module';
 import { RedisModule } from './modules/redis/redis.module';
+import { databaseConfig } from './configs/db.config';
 
 @Module({
   imports: [
@@ -16,17 +17,7 @@ import { RedisModule } from './modules/redis/redis.module';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get<string>('DATABASE_HOST'),
-        port: configService.get<number>('DATABASE_PORT'),
-        username: configService.get<string>('DATABASE_USER'),
-        password: configService.get<string>('DATABASE_PASSWORD'), // <-- Muammo shu yerda hal bo'ladi
-        database: configService.get<string>('DATABASE_NAME'),
-        autoLoadEntities: true,
-        synchronize: configService.get<string>('NODE_ENV') !== 'production', // Mantiqni soddalashtirdik
-        logging: configService.get<string>('NODE_ENV') !== 'production',
-      }),
+      useFactory: databaseConfig
     }),
     BotModule,
     UserModule,
